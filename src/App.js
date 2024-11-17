@@ -2,24 +2,38 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FileUpload from './components/FileUpload';
 import SymptomTimeline from './components/SymptomTimeline';
+import MedicationTracker from './components/MedicationTracker';
+import HealthTipsGenerator from './components/HealthTipsGenerator';
+import HealthGoalTracker from './components/HealthGoalTracker';
+import AppointmentScheduler from './components/AppointmentScheduler';
 import Results from './components/Results';
 import { analyzeHealth } from './services/geminiService';
 import { setResults } from './store/healthSlice';
+import { Button } from "./components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs"
+import { Loader2 } from 'lucide-react'
 
 function App() {
   const [activeTab, setActiveTab] = useState('symptoms');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { symptoms, report } = useSelector((state) => state.health);
+  const { symptoms, medications, goals, appointments, report } = useSelector((state) => state.health);
 
   const handleAnalyze = async () => {
     try {
       setError(null);
       setIsLoading(true);
-      const input = activeTab === 'symptoms' 
-        ? symptoms.map(s => `${s.symptom} for ${s.duration}`).join(', ')
-        : report;
+      let input = '';
+      if (activeTab === 'symptoms') {
+        input = `Symptoms: ${symptoms.map(s => `${s.symptom} for ${s.duration}`).join(', ')}. `;
+        input += `Medications: ${medications.map(m => `${m.medication} (${m.dosage}, ${m.frequency})`).join(', ')}. `;
+        input += `Goals: ${goals.map(g => `${g.name} (Target: ${g.target} ${g.unit}, Progress: ${g.progress})`).join(', ')}. `;
+        input += `Upcoming Appointments: ${appointments.map(a => `${a.doctor} on ${a.date} at ${a.time}`).join(', ')}.`;
+      } else {
+        input = report;
+      }
       if (input) {
         const results = await analyzeHealth(input);
         dispatch(setResults(results));
@@ -33,85 +47,68 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-8">
-            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-1">Health Advisor</div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">AI-Powered Health Analysis 🤖</h1>
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-3xl">Health Advisor</CardTitle>
+            <CardDescription>AI-Powered Health Analysis 🤖</CardDescription>
+          </CardHeader>
+          <CardContent>
             <p className="text-gray-600 mb-6">Get instant health insights based on your symptoms or medical report.</p>
             
-            <div className="mb-6">
-              <div className="sm:hidden">
-                <label htmlFor="tabs" className="sr-only">Select a tab</label>
-                <select
-                  id="tabs"
-                  name="tabs"
-                  className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                >
-                  <option value="symptoms">Enter Symptoms</option>
-                  <option value="report">Upload Report</option>
-                </select>
-              </div>
-              <div className="hidden sm:block">
-                <nav className="flex space-x-4" aria-label="Tabs">
-                  <button
-                    onClick={() => setActiveTab('symptoms')}
-                    className={`${
-                      activeTab === 'symptoms'
-                        ? 'bg-indigo-100 text-indigo-700'
-                        : 'text-gray-500 hover:text-gray-700'
-                    } px-3 py-2 font-medium text-sm rounded-md`}
-                  >
-                    Enter Symptoms
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('report')}
-                    className={`${
-                      activeTab === 'report'
-                        ? 'bg-indigo-100 text-indigo-700'
-                        : 'text-gray-500 hover:text-gray-700'
-                    } px-3 py-2 font-medium text-sm rounded-md`}
-                  >
-                    Upload Report
-                  </button>
-                </nav>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              {activeTab === 'symptoms' ? <SymptomTimeline /> : <FileUpload />}
-            </div>
-
-            <button 
+            <Tabs defaultValue="symptoms" onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="symptoms">Enter Health Data</TabsTrigger>
+                <TabsTrigger value="report">Upload Report</TabsTrigger>
+              </TabsList>
+              <TabsContent value="symptoms">
+                <SymptomTimeline />
+                <MedicationTracker />
+                <HealthGoalTracker />
+                <AppointmentScheduler />
+              </TabsContent>
+              <TabsContent value="report">
+                <FileUpload />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter>
+            <Button 
               onClick={handleAnalyze} 
-              className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-200"
+              disabled={isLoading}
+              className="w-full"
             >
-              Analyze Health Data
-            </button>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing Health Data...
+                </>
+              ) : (
+                "Analyze Health Data"
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
 
-            {error && (
-              <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md">
-                {error}
-              </div>
-            )}
+        {error && (
+          <Card className="mb-8 bg-red-50">
+            <CardContent className="pt-6">
+              <p className="text-red-600">{error}</p>
+            </CardContent>
+          </Card>
+        )}
 
-            {isLoading && (
-              <div className="flex justify-center items-center mt-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-              </div>
-            )}
-            {!isLoading && <Results />}
-          </div>
-        </div>
-      </div>
-      <div className="text-center text-sm text-gray-500 mt-8">
-        © 2024 Mehul Kumar. All rights reserved. 
-        <a href="https://github.com/WonderSTK" className="text-indigo-500 hover:text-indigo-600 ml-1" target="_blank" rel="noopener noreferrer">
-          GitHub
-        </a>
+        <Results />
+
+        <HealthTipsGenerator />
+
+        <footer className="text-center text-sm text-gray-500 mt-8">
+          © 2024 Mehul Kumar. All rights reserved. 
+          <a href="https://github.com/WonderSTK" className="text-indigo-500 hover:text-indigo-600 ml-1" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </footer>
       </div>
     </div>
   );
