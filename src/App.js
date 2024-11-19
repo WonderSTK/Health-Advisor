@@ -6,6 +6,7 @@ import MedicationTracker from './components/MedicationTracker';
 import HealthTipsGenerator from './components/HealthTipsGenerator';
 import HealthGoalTracker from './components/HealthGoalTracker';
 import AppointmentScheduler from './components/AppointmentScheduler';
+import HealthJournal from './components/HealthJournal';
 import Results from './components/Results';
 import { analyzeHealth } from './services/geminiService';
 import { setResults } from './store/healthSlice';
@@ -19,7 +20,7 @@ function App() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { symptoms, medications, goals, appointments, report } = useSelector((state) => state.health);
+  const { symptoms, medications, goals, appointments, journalEntries, report } = useSelector((state) => state.health);
 
   const handleAnalyze = async () => {
     try {
@@ -30,7 +31,8 @@ function App() {
         input = `Symptoms: ${symptoms.map(s => `${s.symptom} for ${s.duration}`).join(', ')}. `;
         input += `Medications: ${medications.map(m => `${m.medication} (${m.dosage}, ${m.frequency})`).join(', ')}. `;
         input += `Goals: ${goals.map(g => `${g.name} (Target: ${g.target} ${g.unit}, Progress: ${g.progress})`).join(', ')}. `;
-        input += `Upcoming Appointments: ${appointments.map(a => `${a.doctor} on ${a.date} at ${a.time}`).join(', ')}.`;
+        input += `Upcoming Appointments: ${appointments.map(a => `${a.doctor} on ${a.date} at ${a.time}`).join(', ')}. `;
+        input += `Recent Journal Entries: ${journalEntries.slice(0, 3).map(e => `${e.date}: Mood - ${e.mood}, Entry - ${e.entry}`).join('; ')}.`;
       } else {
         input = report;
       }
@@ -51,7 +53,7 @@ function App() {
       <div className="max-w-7xl mx-auto">
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-3xl">Health Advisor</CardTitle>
+            <CardTitle className="text-2xl sm:text-3xl">Health Advisor</CardTitle>
             <CardDescription>AI-Powered Health Analysis 🤖</CardDescription>
           </CardHeader>
           <CardContent>
@@ -62,11 +64,12 @@ function App() {
                 <TabsTrigger value="symptoms">Enter Health Data</TabsTrigger>
                 <TabsTrigger value="report">Upload Report</TabsTrigger>
               </TabsList>
-              <TabsContent value="symptoms">
+              <TabsContent value="symptoms" className="space-y-6">
                 <SymptomTimeline />
                 <MedicationTracker />
                 <HealthGoalTracker />
                 <AppointmentScheduler />
+                <HealthJournal />
               </TabsContent>
               <TabsContent value="report">
                 <FileUpload />

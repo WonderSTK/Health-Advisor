@@ -5,6 +5,7 @@ const initialState = {
   medications: [],
   goals: [],
   appointments: [],
+  journalEntries: [],
   report: '',
   disease: '',
   exercise: '',
@@ -16,7 +17,7 @@ const initialState = {
 const healthSlice = createSlice({
   name: 'health',
   initialState,
-  reducers: {
+  reducers:  {
     addSymptom: (state, action) => {
       state.symptoms.push(action.payload);
     },
@@ -58,6 +59,12 @@ const healthSlice = createSlice({
     setHealthTip: (state, action) => {
       state.healthTip = action.payload;
     },
+    addJournalEntry: (state, action) => {
+      state.journalEntries.unshift(action.payload);
+    },
+    deleteJournalEntry: (state, action) => {
+      state.journalEntries.splice(action.payload, 1);
+    },
   },
 });
 
@@ -75,6 +82,8 @@ export const {
   setReport,
   setResults,
   setHealthTip,
+  addJournalEntry,
+  deleteJournalEntry,
 } = healthSlice.actions;
 
 export default healthSlice.reducer;

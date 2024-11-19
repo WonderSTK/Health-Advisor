@@ -1,81 +1,125 @@
-# Health Advisor
+# Health Advisor 🏥
 
-Health Advisor is an AI-powered application that analyzes health information and provides personalized recommendations. It uses the Gemini API to process user-provided symptoms or medical reports and generates insights on possible conditions, recommended exercises, suggested medicines, and dietary advice.
+## Overview
+
+Health Advisor is an AI-powered health management application that provides personalized health insights, tracks symptoms, medications, and appointments, and offers tailored recommendations for a healthier lifestyle.
 
 ## Features
 
-- Input symptoms or upload medical reports
-- AI-powered health analysis
-- Personalized recommendations for:
-  - Possible health conditions
-  - Recommended exercises
-  - Suggested medicines
-  - Dietary advice
-- User-friendly interface with real-time feedback
+- 🧠 AI-powered health analysis
+- 📊 Symptom timeline tracking
+- 💊 Medication management
+- 🎯 Health goal setting and tracking
+- 📅 Appointment scheduling
+- 📝 Health journal for mood and daily observations
+- 📄 Medical report upload and analysis
+- 💡 Personalized health tips
 
 ## Technologies Used
 
 - React
 - Redux Toolkit
-- Axios
 - Tailwind CSS
-- Gemini API
+- shadcn/ui components
+- Google Gemini API
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or later)
-- npm (v6 or later)
-
-### Installation
+## Installation
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/health-advisor.git
+   ```bash
+   git clone https://github.com/your-username/health-advisor.git
    cd health-advisor
    ```
 
 2. Install dependencies:
-   ```
+   ```bash
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add your Gemini API key:
+3. Create a `.env` file in the root directory and add your Google Gemini API key:
    ```
    REACT_APP_GEMINI_API_KEY=your_api_key_here
    ```
 
 4. Start the development server:
-   ```
+   ```bash
    npm start
    ```
 
-5. Open `http://localhost:3000` in your browser to see the application.
-
 ## Usage
 
-1. Choose between entering symptoms or uploading a medical report.
-2. If entering symptoms, type them into the provided text area.
-3. If uploading a report, use the file upload feature to select a PDF, TXT, or image file.
-4. Click the "Analyze Health Data" button to process the information.
-5. View the AI-generated recommendations in the results section.
+1. Enter your health data:
+   - Add symptoms to the timeline
+   - Log your medications
+   - Set health goals
+   - Schedule appointments
+   - Write journal entries
+
+2. Alternatively, upload a medical report for analysis.
+
+3. Click the "Analyze Health Data" button to receive AI-powered insights and recommendations.
+
+4. View your personalized health tips and adjust your lifestyle accordingly.
+
+## Project Structure
+
+```
+health-advisor/
+├── src/
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── button.jsx
+│   │   │   ├── card.jsx
+│   │   │   ├── input.jsx
+│   │   │   ├── tabs.jsx
+│   │   │   └── textarea.jsx
+│   │   ├── AppointmentScheduler.js
+│   │   ├── FileUpload.js
+│   │   ├── HealthGoalTracker.js
+│   │   ├── HealthJournal.js
+│   │   ├── HealthTipsGenerator.js
+│   │   ├── MedicationTracker.js
+│   │   ├── Results.js
+│   │   └── SymptomTimeline.js
+│   ├── lib/
+│   │   └── utils.js
+│   ├── services/
+│   │   └── geminiService.js
+│   ├── store/
+│   │   └── healthSlice.js
+│   ├── App.js
+│   └── index.js
+├── public/
+├── .env
+├── package.json
+├── README.md
+└── tailwind.config.js
+```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature-name`
+3. Make your changes and commit them: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## Acknowledgements
 
-- Gemini API for powering the health analysis
-- React and Redux communities for excellent documentation and resources
+- [React](https://reactjs.org/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Google Gemini API](https://ai.google.dev/)
 
-## Copyright
+## Contact
 
-© 2024 Mehul Kumar. All rights reserved.
+Mehul Kumar - [GitHub](https://github.com/WonderSTK)
 
-[https://github.com/WonderSTK](https://github.com/WonderSTK)
+Project Link: [https://github.com/WonderSTK/health-advisor](https://github.com/WonderSTK/health-advisor)
